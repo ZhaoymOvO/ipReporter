@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-void main() async {
-  final port = 11451;
+void main(List<String> args) async {
+  int port = 12321;
+  if (args.isNotEmpty) {
+    port = int.parse(args[0]);
+  }
 
   final serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
   print('[+] listing port $port');
