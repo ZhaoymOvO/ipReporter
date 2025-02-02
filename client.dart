@@ -1,14 +1,19 @@
 import 'dart:io';
 
-void main(List<dynamic> args) async {
-  bool specifyServer=false;
-  // bool cycle=false;
+void main(List<String> args) async {
+  bool specifyServer = false;
+  int cycle = 900;
   for (final i in args) {
-    List<dynamic> matches = RegExp(r"^(\d{1,3}.|):\d+$").allMatches(i);
-  // ^():\d+$
+    Iterable<dynamic> matches =
+        RegExp(r"^\S+:\d+$").allMatches(i).cast<dynamic>();
+    if (!matches.isEmpty) {
+      specifyServer = true;
+    }
   }
-  if ()
-  if (args.length==0){
+  if (args.length == 2) {
+    cycle = int.parse(args[1]);
+  }
+  if (!specifyServer) {
     throw Exception("""
 ipReporter client.dart by ZhaoymOvO
 
@@ -21,18 +26,18 @@ cycle:          time between two reports (default: 900sec. or 15min.)
 
 code released under `Mozilla Public License, Version 2.0`.
 """);
-  }else if(args.length==0)
+  }
   while (true == true) {
     // print("[test] getting ipv6 address");
     final ipv6address = await _getPublicIPv6();
 
-    final address = '127.0.0.1';
-    final port = 11451;
+    final address = args[0].split(':')[0];
+    final port = int.parse(args[0].split(':')[1]);
     final hostname = Platform.localHostname;
     final msg = "[${DateTime.now()}] ${hostname}: ${ipv6address}";
     _reportToServer(msg, address, port);
     print(msg);
-    await Future.delayed(Duration(seconds: 900));
+    await Future.delayed(Duration(seconds: cycle));
   }
 }
 
